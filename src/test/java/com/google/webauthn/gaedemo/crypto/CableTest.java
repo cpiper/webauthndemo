@@ -17,12 +17,14 @@
 
 package com.google.webauthn.gaedemo.crypto;
 
+import com.google.common.io.BaseEncoding;
 import com.google.webauthn.gaedemo.objects.CablePairingData;
 import com.google.webauthn.gaedemo.objects.CableSessionData;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.security.KeyPair;
 import java.util.Random;
 
 public class CableTest {

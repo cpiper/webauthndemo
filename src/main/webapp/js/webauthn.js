@@ -281,6 +281,7 @@ function makeCredential(advancedOptions) {
     advancedOptions: JSON.stringify(advancedOptions)
 
   }).then(options => {
+    console.log(options);
     const makeCredentialOptions = {};
     _options = options;
 
@@ -305,6 +306,10 @@ function makeCredential(advancedOptions) {
     }
     if ('extensions' in options) {
       makeCredentialOptions.extensions = options.extensions;
+      if (makeCredentialOptions.extensions.cableRegistration) {
+        makeCredentialOptions.extensions.cableRegistration.rpPublicKey =
+          strToBin(makeCredentialOptions.extensions.cableRegistration.rpPublicKey);
+      }
     }
 
     console.log(makeCredentialOptions);

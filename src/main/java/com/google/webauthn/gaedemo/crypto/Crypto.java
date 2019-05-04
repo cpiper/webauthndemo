@@ -15,10 +15,26 @@
 
 package com.google.webauthn.gaedemo.crypto;
 
-import com.google.common.primitives.Bytes;
-import com.google.webauthn.gaedemo.exceptions.WebAuthnException;
-import com.google.webauthn.gaedemo.objects.EccKey;
-import com.google.webauthn.gaedemo.objects.RsaKey;
+import java.math.BigInteger;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.security.Security;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.security.cert.X509Certificate;
+import java.security.spec.ECGenParameterSpec;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import java.security.spec.RSAPublicKeySpec;
+import java.util.Arrays;
+
 import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.crypto.digests.SHA256Digest;
@@ -35,13 +51,10 @@ import org.bouncycastle.jce.spec.ECPublicKeySpec;
 import org.bouncycastle.math.ec.ECPoint;
 import org.jose4j.jws.EcdsaUsingShaAlgorithm;
 
-import java.math.BigInteger;
-import java.security.*;
-import java.security.cert.X509Certificate;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
-import java.security.spec.RSAPublicKeySpec;
-import java.util.Arrays;
+import com.google.common.primitives.Bytes;
+import com.google.webauthn.gaedemo.exceptions.WebAuthnException;
+import com.google.webauthn.gaedemo.objects.EccKey;
+import com.google.webauthn.gaedemo.objects.RsaKey;
 
 public class Crypto {
 
@@ -183,6 +196,18 @@ public class Crypto {
     KeySpec keySpec = new java.security.spec.ECPublicKeySpec(w, params);
     KeyFactory keyFactory = KeyFactory.getInstance("EC");
     return keyFactory.generatePublic(keySpec);
+  }
+  
+  public static KeyPair generateKeyPair() {
+    try {
+      ECGenParameterSpec spec = new ECGenParameterSpec("secp256r1");
+      KeyPairGenerator gen = KeyPairGenerator.getInstance("EC");
+      gen.initialize(spec, new SecureRandom());
+      KeyPair keyPair = gen.generateKeyPair();
+      return keyPair;
+    } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
+      throw new RuntimeException(e);
+    }
   }
 
 }
