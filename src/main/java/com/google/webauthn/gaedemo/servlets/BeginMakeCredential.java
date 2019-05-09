@@ -84,10 +84,12 @@ public class BeginMakeCredential extends HttpServlet {
     optionsJson.add("session", sessionJson);
 
     AuthenticationExtensionsClientInputs extensions = new AuthenticationExtensionsClientInputs();
-    KeyPair cableKeyPair = extensions.addCableRegistrationData();
-    // Store the KeyPair in storage
-    CableKeyPair storedKeyPair = new CableKeyPair(cableKeyPair);
-    storedKeyPair.save(userService.getCurrentUser().getEmail());
+    try {
+      KeyPair cableKeyPair = extensions.addCableRegistrationData();
+      // Store the KeyPair in storage
+      CableKeyPair storedKeyPair = new CableKeyPair(cableKeyPair);
+      storedKeyPair.save(session.getId());
+    } catch (Exception e) {}
     
     optionsJson.add("extensions", extensions.getRegistrationExtensions());
 

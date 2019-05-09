@@ -339,6 +339,11 @@ function makeCredential(advancedOptions) {
     const response = {};
     response.clientDataJSON = binToStr(attestation.response.clientDataJSON);
     response.attestationObject = binToStr(attestation.response.attestationObject);
+    
+    // Check for included extensions
+    if (attestation.getClientExtensionResults) {
+      publicKeyCredential.extensions = attestation.getClientExtensionResults();
+    }
 
     // Check if transports are included in the registration response.
     if (attestation.response.getTransports) {

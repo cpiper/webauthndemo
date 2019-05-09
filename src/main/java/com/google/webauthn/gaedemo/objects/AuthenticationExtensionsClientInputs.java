@@ -15,21 +15,21 @@
 package com.google.webauthn.gaedemo.objects;
 
 import java.security.KeyPair;
+import java.security.interfaces.ECPublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.appengine.repackaged.com.google.common.io.BaseEncoding;
+import com.google.common.io.BaseEncoding;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.webauthn.gaedemo.crypto.Crypto;
-import com.google.webauthn.gaedemo.storage.CableKeyPair;
 
 public class AuthenticationExtensionsClientInputs {
   public List<CableSessionData> cableAuthentication;
   public KeyPair rpPublicKey;
   JsonObject registrationExtensions;
-
+  
   public static AuthenticationExtensionsClientInputs parse(String parameter) {
     Gson gson = new Gson();
     return gson.fromJson(parameter, AuthenticationExtensionsClientInputs.class);
@@ -63,8 +63,9 @@ public class AuthenticationExtensionsClientInputs {
     JsonArray versionArray = new JsonArray();
     versionArray.add(1L);
     cableRegistration.add("versions", versionArray);
-    cableRegistration.addProperty("rpPublicKey",
-        BaseEncoding.base64().encode(keyPair.getPublic().getEncoded()));
+
+    cableRegistration.addProperty("rpPublicKey", BaseEncoding.base64()
+        .encode(Crypto.compressECPublicKey((ECPublicKey) keyPair.getPublic())));
     registrationExtensions.add("cableRegistration", cableRegistration);
 
     return keyPair;
